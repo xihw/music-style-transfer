@@ -3,9 +3,9 @@ from keras.layers import Input, LSTM, Dropout, Dense, Lambda
 
 
 class Seq2SeqLSTM():
-    def __init__(self):
-        self.input_shape = (1000, 128)
-        self.output_shape = (1000, 128)
+    def __init__(self, num_timestamps):
+        self.input_shape = (num_timestamps, 128)
+        self.output_shape = (num_timestamps, 128)
         self.init_hyper_params()
         
 

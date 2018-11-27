@@ -10,8 +10,8 @@ def load(style):
 	    filepath = os.path.join(data_folder, filename)
 	    jazz_pianoroll = pr.parse(filepath).tracks[0].pianoroll
 	    # retrieve 1000 timestamp from the middle.
-	    jazz_x = ((jazz_pianoroll[1000:2000, :] > 0) * 1).reshape(1, 1000, 128)
-	    jazz_y = jazz_pianoroll[1000:2000, :].reshape(1, 1000, 128)
+	    jazz_x = ((jazz_pianoroll[1000:1500, :] > 0) * 1).reshape(1, 500, 128)
+	    jazz_y = jazz_pianoroll[1000:1500, :].reshape(1, 500, 128)
 	    if X is None:
 	        X = jazz_x
 	    else:
@@ -21,6 +21,6 @@ def load(style):
 	    else:
 	        Y = np.concatenate((Y, jazz_y), axis=0)
 
-	print('X shape:', X.shape) # 349 examples, 1000 timestamps, 128 pitchs
+	print('X shape:', X.shape) # 349 examples, 500 timestamps, 128 pitchs
 	print('Y shape:', Y.shape)
 	return (X, Y)
