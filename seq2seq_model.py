@@ -1,6 +1,6 @@
 from keras.models import Model
 from keras.layers import Input, LSTM, Dropout, Dense, Lambda
-
+from keras.optimizers import Adam
 
 class Seq2SeqLSTM():
     def __init__(self, num_timestamps):
@@ -13,7 +13,8 @@ class Seq2SeqLSTM():
         self.encoder_lstm_unit = 128
         self.encoder_keep_prob = 0.8
         self.style_lstm_unit = 64
-        self.style_keep_prob = 0.8    
+        self.style_keep_prob = 0.8
+        self.learning_rate = 0.0015
 
 
     def encoder_lstm_layer(self, inputs):
@@ -44,7 +45,8 @@ class Seq2SeqLSTM():
         Y_pred = self.dense_output_layer(Y_pred)
         
         self.model = Model(inputs=X, outputs=Y_pred)
-        self.model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
+        adam_opt = Adam(lr=self.learning_rate, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+        self.model.compile(loss='mean_squared_error', optimizer=adam_opt, metrics=['accuracy'])
         self.model.summary()
     
     def train(self, X_train, Y_true, epochs=50, batch_size=32):
