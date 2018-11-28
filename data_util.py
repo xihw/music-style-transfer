@@ -24,3 +24,10 @@ def load(style):
 	print('X shape:', X.shape) # 349 examples, 500 timestamps, 128 pitchs
 	print('Y shape:', Y.shape)
 	return (X, Y)
+
+# save matrix to midi file
+def save(matrix, filename):
+    track = pr.Track(pianoroll=matrix, program=0, is_drum=False, name='classic music transferred from jazz')
+    multitrack = pr.Multitrack(tracks=[track])
+    pr.utilities.write(multitrack, filename)
+    print("{} saved".format(filename))
