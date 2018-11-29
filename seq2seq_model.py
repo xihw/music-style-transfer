@@ -1,6 +1,7 @@
 from keras.models import Model
 from keras.layers import Input, LSTM, Dropout, Dense, Lambda
 from keras.optimizers import Adam
+import matplotlib.pyplot as plt
 
 class Seq2SeqLSTM():
     def __init__(self, num_timestamps):
@@ -46,11 +47,19 @@ class Seq2SeqLSTM():
         
         self.model = Model(inputs=X, outputs=Y_pred)
         adam_opt = Adam(lr=self.learning_rate, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
-        self.model.compile(loss='mean_squared_error', optimizer=adam_opt, metrics=['accuracy'])
+        self.model.compile(loss='mean_squared_error', optimizer=adam_opt)
         self.model.summary()
     
     def train(self, X_train, Y_true, epochs=50, batch_size=32):
-        self.model.fit(X_train, Y_true, epochs=epochs, batch_size=batch_size, shuffle=True)
+        history = self.model.fit(X_train, Y_true, epochs=epochs, batch_size=batch_size, shuffle=True)
+
+        plt.plot(history.history['loss'])
+        plt.title('Model loss')
+        plt.ylabel('Loss')
+        plt.xlabel('Epoch')
+        plt.legend(['Train'], loc='upper left')
+        plt.savefig('tmp.png')
+
                 
                 
     def predict(self, x):
