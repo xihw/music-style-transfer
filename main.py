@@ -4,27 +4,22 @@ import data_util
 from seq2seq_model import Seq2SeqLSTM
 
 def main():
-	X, Y = data_util.load('jazz')
+	X, Y = data_util.load('jazz2')
 
 
 	seq2seq_model = Seq2SeqLSTM(500)
 	seq2seq_model.prepare()
-	seq2seq_model.train(X, Y, epochs=1000)
+	seq2seq_model.train(X, Y, epochs=2)
 
-
-	sample_classical_midi = pr.parse('./data/jazz/Chelsea Bridge.mid')
-	sample_classical_pianoroll = sample_classical_midi.tracks[0].pianoroll
-	sample_classical_x = (sample_classical_pianoroll > 0) * 1
-	sample_classical_x = sample_classical_x[1000:1500]
-	sample_classical_x = sample_classical_x.reshape(1, 500, 128)
-
+	sample_classical_x, _ = data_util.parse('./data/jazz/Chelsea Bridge.mid')
 	y_pred = seq2seq_model.predict(sample_classical_x)
-	y_pred = [np.round(yt) for yt in y_pred]
 
 	np.set_printoptions(threshold=np.nan)
-	print(y_pred)
+	print(y_pred.shape)
 	with open("output/tmp.txt","w+") as f:
 		print(y_pred, file=f)
+
+	data_util.save(y_pred, 'output/classical/Chelsea Bridge transferred.mid')	
 
 if __name__ == '__main__':
 	main()

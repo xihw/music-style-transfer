@@ -1,7 +1,8 @@
 from keras.models import Model
-from keras.layers import Input, LSTM, Dropout, Dense, Lambda
+from keras.layers import Input, Conv1D, LSTM, Dropout, Dense, Lambda
 from keras.optimizers import Adam
 import matplotlib.pyplot as plt
+import numpy as np
 
 class Seq2SeqLSTM():
     def __init__(self, num_timestamps):
@@ -11,11 +12,17 @@ class Seq2SeqLSTM():
         
 
     def init_hyper_params(self):
+        self.encoder_conv_filters = 88
         self.encoder_lstm_unit = 88
         self.encoder_keep_prob = 0.8
         self.style_lstm_unit = 64
         self.style_keep_prob = 0.8
         self.learning_rate = 0.0015
+
+
+    def encoder_conv_layer(self, inputs):
+        outputs = Conv1D(filters=self.encoder_conv_filters, kernel_size=2, strides=1, padding="same", activation='relu', input_shape=inputs.shape)(inputs)
+        return outputs
 
 
     def encoder_lstm_layer(self, inputs):
@@ -41,6 +48,7 @@ class Seq2SeqLSTM():
         X = Input(shape=self.input_shape)
 
         Y_pred = X
+        Y_pred = self.encoder_conv_layer(Y_pred)
         Y_pred = self.encoder_lstm_layer(Y_pred)
         Y_pred = self.style_lstm_layer(Y_pred)
         Y_pred = self.dense_output_layer(Y_pred)
@@ -63,6 +71,8 @@ class Seq2SeqLSTM():
                 
                 
     def predict(self, x):
-        return self.model.predict(x)
+        y_pred = self.model.predict(x)
+        y_pred = [np.round(yt) for yt in y_pred]
+        return y_pred[0]
        
        
