@@ -66,7 +66,7 @@ class Seq2SeqLSTM():
         plt.ylabel('Loss')
         plt.xlabel('Epoch')
         plt.legend(['Train'], loc='upper left')
-        plt.savefig('tmp.png')
+        plt.savefig('output/tmp.png')
 
                 
                 

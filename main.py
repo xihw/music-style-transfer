@@ -4,12 +4,12 @@ import data_util
 from seq2seq_model import Seq2SeqLSTM
 
 def main():
-	X, Y = data_util.load('jazz2')
+	X, Y = data_util.load('jazz')
 
 
-	seq2seq_model = Seq2SeqLSTM(500)
+	seq2seq_model = Seq2SeqLSTM(1000)
 	seq2seq_model.prepare()
-	seq2seq_model.train(X, Y, epochs=2)
+	seq2seq_model.train(X, Y, epochs=20)
 
 	sample_classical_x, _ = data_util.parse('./data/jazz/Chelsea Bridge.mid')
 	y_pred = seq2seq_model.predict(sample_classical_x)
