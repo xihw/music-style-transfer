@@ -9,7 +9,7 @@ def main():
 
 	seq2seq_model = Seq2SeqLSTM(1000)
 	seq2seq_model.prepare()
-	seq2seq_model.train(X, Y, epochs=20)
+	seq2seq_model.train(X, Y, epochs=1000)
 
 	sample_classical_x, _ = data_util.parse('./data/jazz/Chelsea Bridge.mid')
 	y_pred = seq2seq_model.predict(sample_classical_x)

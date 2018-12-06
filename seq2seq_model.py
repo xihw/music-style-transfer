@@ -1,8 +1,10 @@
 from keras.models import Model
-from keras.layers import Input, Conv1D, LSTM, Dropout, Dense, Lambda
+from keras.layers import Input, Conv1D, LSTM, Dropout, Dense, Lambda, multiply
 from keras.optimizers import Adam
 import matplotlib.pyplot as plt
 import numpy as np
+import keras.backend as K
+
 
 class Seq2SeqLSTM():
     def __init__(self, num_timestamps):
@@ -18,6 +20,7 @@ class Seq2SeqLSTM():
         self.style_lstm_unit = 64
         self.style_keep_prob = 0.8
         self.learning_rate = 0.0015
+        self.alpha_zero_loss = 10
 
 
     def encoder_conv_layer(self, inputs):
@@ -42,6 +45,17 @@ class Seq2SeqLSTM():
         # scale output from (0, 1) to (0, 127) in accordance with velocity range
         outputs = Lambda(lambda x: x * 127)(outputs)
         return outputs
+
+
+    def custom_loss(self, y_true, y_pred):
+        zeros = K.zeros_like(y_true)
+        zeroLoss = K.mean(multiply([
+            K.cast(K.equal(y_true, zeros), dtype='float32'), 
+            K.square(y_true - y_pred)]))
+        oneLoss = K.mean(multiply([
+            K.cast(K.not_equal(y_true, zeros), dtype='float32'), 
+            K.square(y_true - y_pred)]))
+        return zeroLoss * self.alpha_zero_loss + oneLoss
             
 
     def prepare(self):
@@ -55,7 +69,7 @@ class Seq2SeqLSTM():
         
         self.model = Model(inputs=X, outputs=Y_pred)
         adam_opt = Adam(lr=self.learning_rate, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
-        self.model.compile(loss='mean_squared_error', optimizer=adam_opt)
+        self.model.compile(loss=self.custom_loss, optimizer=adam_opt)
         self.model.summary()
     
     def train(self, X_train, Y_true, epochs=50, batch_size=32):
