@@ -14,7 +14,9 @@ def load(style):
     data_folder = 'data/{}'.format(style)
     for filename in os.listdir(data_folder):
         filepath = os.path.join(data_folder, filename)
-        matrix_x, matrix_y = parse_multiple(filepath)
+        ((matrix_x_1, matrix_y_1), (matrix_x_2, matrix_y_2), (matrix_x_3, matrix_y_3)) = parse_multiple(filepath)
+        matrix_x = np.concatenate((matrix_x_1, matrix_x_2, matrix_x_3), axis=0)
+        matrix_y = np.concatenate((matrix_y_1, matrix_y_2, matrix_y_3), axis=0)
         if X is None:
             X = matrix_x
         else:
@@ -48,8 +50,9 @@ def parse_multiple(a_file):
     matrix_x_2 = ((pianoroll[1500:2500, 21:109] > 0) * 1).reshape(1, num_timestamps, num_pitchs)
     matrix_y_2 = pianoroll[1500:2500, 21:109].reshape(1, num_timestamps, num_pitchs) 
     matrix_x_3 = ((pianoroll[2500:3500, 21:109] > 0) * 1).reshape(1, num_timestamps, num_pitchs)
-    matrix_y_3 = pianoroll[2500:3500, 21:109].reshape(1, num_timestamps, num_pitchs) 
-    return (np.concatenate((matrix_x_1, matrix_x_2, matrix_x_3), axis=0), np.concatenate((matrix_y_1, matrix_y_2, matrix_y_3), axis=0))
+    matrix_y_3 = pianoroll[2500:3500, 21:109].reshape(1, num_timestamps, num_pitchs)
+
+    return ((matrix_x_1, matrix_y_1), (matrix_x_2, matrix_y_2), (matrix_x_3, matrix_y_3))
 
 
 # save matrix to midi file

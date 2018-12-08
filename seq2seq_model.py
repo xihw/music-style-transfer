@@ -82,6 +82,8 @@ class Seq2SeqLSTM():
         plt.legend(['Train'], loc='upper left')
         plt.savefig('output/tmp.png')
 
+        self.model.save_weights("output/Seq2SeqModel.h5")
+        print("model saved to disk")
                 
                 
     def predict(self, x):

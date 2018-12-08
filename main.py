@@ -11,8 +11,12 @@ def main():
 	seq2seq_model.prepare()
 	seq2seq_model.train(X, Y, epochs=1000)
 
-	sample_classical_x, _ = data_util.parse('./data/jazz/Chelsea Bridge.mid')
-	y_pred = seq2seq_model.predict(sample_classical_x)
+	((matrix_x_1, _), (matrix_x_2, _), (matrix_x_3, _)) = data_util.parse_multiple('./data/jazz/Chelsea Bridge.mid')
+
+	y_pred_1 = seq2seq_model.predict(matrix_x_1)
+	y_pred_2 = seq2seq_model.predict(matrix_x_2)
+	y_pred_3 = seq2seq_model.predict(matrix_x_3)
+	y_pred = np.concatenate((y_pred_1, y_pred_2, y_pred_1), axis=0)
 
 	np.set_printoptions(threshold=np.nan)
 	print(y_pred.shape)
