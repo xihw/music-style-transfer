@@ -7,15 +7,15 @@ import keras.backend as K
 
 
 class Seq2SeqLSTM():
-    def __init__(self, num_timestamps):
-        self.input_shape = (num_timestamps, 88)
-        self.output_shape = (num_timestamps, 88)
+    def __init__(self, num_timestamps=1000):
+        self.input_shape = (num_timestamps, 128)
+        self.output_shape = (num_timestamps, 128)
         self.init_hyper_params()
         
 
     def init_hyper_params(self):
-        self.encoder_conv_filters = 88
-        self.encoder_lstm_unit = 88
+        self.encoder_conv_filters = 128
+        self.encoder_lstm_unit = 128
         self.encoder_keep_prob = 0.8
         self.style_lstm_unit = 64
         self.style_keep_prob = 0.8
