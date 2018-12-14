@@ -9,7 +9,7 @@ def main():
 
 	seq2seq_model = Seq2SeqLSTM()
 	seq2seq_model.prepare()
-	seq2seq_model.train(X, Y, epochs=1000)
+	seq2seq_model.train(X, Y, epochs=2000)
 
 	((matrix_x_1, matrix_x_2, matrix_x_3, matrix_x_4), _) = data_util.parse_multiple('./data/jazz/Chelsea Bridge.mid')
 
@@ -21,7 +21,7 @@ def main():
 
 	np.set_printoptions(threshold=np.nan)
 	print(y_pred.shape)
-	with open("output/tmp.txt","w+") as f:
+	with open("output/classical/sample_classical_from_jazz.txt","w+") as f:
 		print(y_pred, file=f)
 
 	data_util.save(y_pred, 'output/classical/Chelsea Bridge transferred.mid')	

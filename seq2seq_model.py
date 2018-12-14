@@ -73,14 +73,22 @@ class Seq2SeqLSTM():
         self.model.summary()
     
     def train(self, X_train, Y_true, epochs=50, batch_size=32):
-        history = self.model.fit(X_train, Y_true, epochs=epochs, batch_size=batch_size, shuffle=True)
+        history = self.model.fit(X_train, Y_true, epochs=epochs, batch_size=batch_size, validation_split=0.2, shuffle=True)
 
         plt.plot(history.history['loss'])
         plt.title('Model loss')
         plt.ylabel('Loss')
         plt.xlabel('Epoch')
         plt.legend(['Train'], loc='upper left')
-        plt.savefig('output/tmp.png')
+        plt.savefig('output/learning_curve.png')
+
+        plt.axis((100, 2200, 0, 20000))
+        plt.plot(history.history['loss'])
+        plt.title('Model loss')
+        plt.ylabel('Loss')
+        plt.xlabel('Epoch')
+        plt.legend(['Train'], loc='upper left')
+        plt.savefig('output/learning_curve_scaled.png')
 
         self.model.save_weights("output/Seq2SeqModel.h5")
         print("model saved to disk")

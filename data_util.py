@@ -13,21 +13,24 @@ def load(style):
     Y = None
     data_folder = 'data/{}'.format(style)
     for filename in os.listdir(data_folder):
-        filepath = os.path.join(data_folder, filename)
-        (matrix_x, matrix_y) = parse_multiple(filepath)
-        matrix_x = np.concatenate(matrix_x, axis=0)
-        matrix_y = np.concatenate(matrix_y, axis=0)
-        if X is None:
-            X = matrix_x
-        else:
-            X = np.concatenate((X, matrix_x), axis=0)
-        if Y is None:
-            Y = matrix_y    
-        else:
-            Y = np.concatenate((Y, matrix_y), axis=0)
+        try:
+            filepath = os.path.join(data_folder, filename)
+            (matrix_x, matrix_y) = parse_multiple_dynamic(filepath)
+            matrix_x = np.concatenate(matrix_x, axis=0)
+            matrix_y = np.concatenate(matrix_y, axis=0)
+            if X is None:
+                X = matrix_x
+            else:
+                X = np.concatenate((X, matrix_x), axis=0)
+            if Y is None:
+                Y = matrix_y    
+            else:
+                Y = np.concatenate((Y, matrix_y), axis=0)
+        except Exception as e:
+            pass # pass failed parses
 
     print('Done.')
-    print('X shape:', X.shape) # 349 * 3 examples, 1000 timestamps, 128 pitchs
+    print('X shape:', X.shape) # 349 * (t / 1000) examples, 1000 timestamps, 128 pitchs
     print('Y shape:', Y.shape)
     return (X, Y)
 
@@ -59,6 +62,27 @@ def parse_multiple(a_file):
 
     return ((matrix_x_1, matrix_x_2, matrix_x_3, matrix_x_4), 
             (matrix_y_1, matrix_y_2, matrix_y_3, matrix_y_4))
+
+
+def parse_multiple_dynamic(a_file):
+    pianoroll = pr.parse(a_file).tracks[0].pianoroll
+    shape = pianoroll.shape
+    print(shape)
+
+    matrix_x = []
+    matrix_y = []
+
+    total_timestamps = shape[0]
+    t = 0
+    while t+1000 <= total_timestamps:
+        matrix_t = ((pianoroll[t:t+1000, :] > 0) * 1).reshape(1, num_timestamps, num_pitchs)
+        matrix_t = pianoroll[t:t+1000, :].reshape(1, num_timestamps, num_pitchs)
+        matrix_x.append(matrix_t)
+        matrix_y.append(matrix_t)
+        t += 1000
+
+    print("done parsing {} dynamically into {} segments of 1000 timestamps".format(a_file, len(matrix_x)))
+    return (matrix_x, matrix_y)    
 
 
 # save matrix to midi file
