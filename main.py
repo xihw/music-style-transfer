@@ -9,7 +9,7 @@ def main():
 
 	seq2seq_model = Seq2SeqLSTM()
 	seq2seq_model.prepare()
-	seq2seq_model.train(X, Y, epochs=1500, batch_size=256)
+	seq2seq_model.train(X, Y, epochs=800, batch_size=128)
 
 	((matrix_x_1, matrix_x_2, matrix_x_3, matrix_x_4), _) = data_util.parse_multiple('./data/jazz/Chelsea Bridge.mid')
 
