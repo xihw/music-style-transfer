@@ -82,7 +82,7 @@ class Seq2SeqLSTM():
         plt.legend(['Train'], loc='upper left')
         plt.savefig('output/learning_curve.png')
 
-        plt.axis((100, 2200, 0, 20000))
+        plt.axis((100, 2200, 0, 100))
         plt.plot(history.history['loss'])
         plt.title('Model loss')
         plt.ylabel('Loss')
